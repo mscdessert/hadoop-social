@@ -1,0 +1,5 @@
+#!/bin/bash
+
+echo "OUTPUT"
+
+hadoop fs -cat tweet-tone-summary/part-*

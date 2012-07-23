@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# ./job-1-mapper-device-list.py < $1 > device-list
+# sort -k1,1 device-list | ./job-1-reducer-device-summary.py > device-summary-list
+
+echo "Preparing TWEET-SOURCE JOB-1"
+echo "Clearing output directory: device-summary-list"
+
+hadoop fs -rmr device-summary-list
+
+echo "Submitting JOB-1"
+echo "MAPPER - mapper-device-list"
+echo "REDUCER - reducer-device-summary"
+
+hadoop jar $HADOOP_HOME/hadoop-streaming.jar \
+-Dmapred.map.tasks=4 \
+-Dmapred.reduce.tasks=4 \
+-Dmapred.map.child.java.opts=-Xmx2000M \
+-Dmapred.reduce.child.java.opts=-Xmx2000M \
+-Dmapred.reduce.slowstart.completed.maps=1 \
+-input olympic-tweets/* \
+-output device-summary-list \
+-mapper "$HOME/map-reduce/tweet-source/jobs/job-1-mapper-device-list.py" \
+-file "$HOME/map-reduce/tweet-source/jobs/job-1-mapper-device-list.py" \
+-reducer "$HOME/map-reduce/tweet-source/jobs/job-1-reducer-device-summary.py" \
+-file "$HOME/map-reduce/tweet-source/jobs/job-1-reducer-device-summary.py"

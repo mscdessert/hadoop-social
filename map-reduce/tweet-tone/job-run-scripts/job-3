@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Streaming simulate
+# cat tone-word-list tweet-word-list | sort -k1,1 > joined-list
+#./job-3-reducer-tweet-tone-list.py < joined-list > tweet-tone-list
+
+echo "Preparing JOB-3"
+echo "Cleaning output directory: tweet-tone-list"
+
+hadoop fs -rmr tweet-tone-list
+
+echo "Submitting JOB-3"
+echo "MAPPER - cat the input files"
+echo "REDUCER - reducer-tweet-tone-list"
+
+hadoop jar $HADOOP_HOME/hadoop-streaming.jar \
+-Dmapred.map.tasks=1 \
+-Dmapred.reduce.tasks=1 \
+-input word-list/* \
+-output tweet-tone-list \
+-mapper /bin/cat \
+-reducer "$HOME/map-reduce/tweet-tone/jobs/job-3-reducer-tweet-tone-list.py" \
+-file "$HOME/map-reduce/tweet-tone/jobs/job-3-reducer-tweet-tone-list.py"
+
+
+

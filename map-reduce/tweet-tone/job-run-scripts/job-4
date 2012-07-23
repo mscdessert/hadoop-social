@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Streaming simulate
+# sort -k1,1 tweet-tone-list > sorted-tweet-tone-list
+# ./job-4-reducer-tweet-tone-summary.py < sorted-tweet-tone-list > tweet-tone-summary
+
+echo "Preparing JOB-4"
+echo "Cleaning output directory: tweet-tone-summary"
+
+hadoop fs -rmr tweet-tone-summary
+
+echo "Submitting JOB-4"
+echo "MAPPER - cat "
+echo "REDUCER - reducer-tweet-tone-summary"
+
+hadoop jar $HADOOP_HOME/hadoop-streaming.jar \
+-Dmapred.map.tasks=1 \
+-Dmapred.reduce.tasks=1 \
+-input tweet-tone-list/* \
+-output tweet-tone-summary/ \
+-mapper /bin/cat \
+-reducer "$HOME/map-reduce/tweet-tone/jobs/job-4-reducer-tweet-tone-summary.py" \
+-file "$HOME/map-reduce/tweet-tone/jobs/job-4-reducer-tweet-tone-summary.py"
+
+

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+hadoop fs -cat device-summary-list/part* > device-summary-list
+
+

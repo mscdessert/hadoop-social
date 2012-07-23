@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# mapper-input-lines will be the input
+# ./job-2-mapper-extract-words.py < $1 | sort -k1,1 > job-2-mapper-intermediate-output
+# ./job-2-reducer-tweet-word-list.py < job-2-mapper-intermediate-output > tweet-word-list
+
+echo "Preparing JOB-2"
+echo "Cleaning output directory: word-list/tweet-word-list"
+
+hadoop fs -rmr word-list/tweet-word-list
+
+echo "Submitting JOB-2"
+echo "MAPPER - mapper-extract-words"
+echo "REDUCER - reducer-tweet-word-list"
+
+hadoop jar $HADOOP_HOME/hadoop-streaming.jar \
+-Dmapred.map.tasks=1 \
+-Dmapred.reduce.tasks=1 \
+-input olympic-tweets/* \
+-output word-list/tweet-word-list \
+-mapper "$HOME/map-reduce/tweet-tone/jobs/job-2-mapper-extract-words.py" \
+-file "$HOME/map-reduce/tweet-tone/jobs/job-2-mapper-extract-words.py" \
+-reducer "$HOME/map-reduce/tweet-tone/jobs/job-2-reducer-tweet-word-list.py" \
+-file "$HOME/map-reduce/tweet-tone/jobs/job-2-reducer-tweet-word-list.py"
+
+

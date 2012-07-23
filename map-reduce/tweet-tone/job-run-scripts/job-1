@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Streaming simulate
+# tone-dict will be the input
+# ./job-1-mapper-tone-word-list.py < $1  > tone-word-list
+
+
+echo "Preparing JOB-1"
+echo "Cleaning output directory: word-list/tone-word-list"
+
+hadoop fs -rmr word-list/tone-word-list
+
+echo "Submitting JOB-1"
+echo "MAPPER - mapper-tone-word-list"
+
+hadoop jar $HADOOP_HOME/hadoop-streaming.jar \
+-Dmapred.reduce.tasks=0 \
+-input tone-dict/* \
+-output word-list/tone-word-list \
+-mapper "$HOME/map-reduce/tweet-tone/jobs/job-1-mapper-tone-word-list.py" \
+-file "$HOME/map-reduce/tweet-tone/jobs/job-1-mapper-tone-word-list.py"
+
+
+
