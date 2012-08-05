@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# Script to Automate Hadoop wordcount example 
+# INPUT - Number of nodes in the cluster
+
+for SIZE in 128 256 512 1024
+do
+	echo "############# $SIZE MB data set #############"
+	echo
+
+# 1 Move files to LOCAL  source directory - toHDFS
+	echo `date` ":	$SIZE MB data"
+	echo `date` ":	Moving files to LOCAL source toHDFS"
+	echo
+
+	rm /app/hadoop/tmp/toHDFS/*
+	cp /app/hadoop/tmp/${SIZE}MBfiles/* /app/hadoop/tmp/toHDFS/
+
+# 2 Copy files to HDFS 
+	echo `date` ":	Copying files to HDFS"
+	echo
+	./move-to-hdfs
+
+# 3 Edit word-count script
+	echo `date` ":	Editing word-count script"
+	echo
+	SED_ARG=" -i 's/TASKS/$1/g' word-count"
+	eval sed $SED_ARG
+
+# 4 Run word count
+	echo `date` ":	Running word-count"
+	echo
+	./word-count
+
+# 5 RE-Edit word-count script
+	SED_ARG=" -i 's/$1/TASKS/g' word-count"
+	eval sed $SED_ARG
+	echo `date` ":	Completed $SIZE MB data"
+	echo
+done
